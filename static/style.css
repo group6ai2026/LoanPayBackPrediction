@@ -61,6 +61,11 @@ button:hover {
     border-left: 5px solid #2e7d32;
 }
 
+.result.not-paid-back {
+    background: #fdecea;
+    border-left: 5px solid #c62828;
+}
+
 .error {
     margin-top: 20px;
     padding: 15px;

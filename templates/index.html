@@ -170,7 +170,9 @@
                 }
 
                 if (resp.ok && data && data.prediction) {
-                    resultEl.innerHTML = `<div class="result"><h3>Prediction Result</h3><p><strong>Status:</strong> ${data.prediction}</p><p><strong>Probability:</strong> ${data.probability}</p></div>`;
+                    const isNotPaidBack = data.prediction.toLowerCase().includes('not paid back');
+                    const resultClass = isNotPaidBack ? 'result not-paid-back' : 'result';
+                    resultEl.innerHTML = `<div class="${resultClass}"><h3>Prediction Result</h3><p><strong>Status:</strong> ${data.prediction}</p><p><strong>Probability:</strong> ${data.probability}</p></div>`;
                 } else {
                     resultEl.innerHTML = `<div class="error"><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
                 }
