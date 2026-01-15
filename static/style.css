@@ -29,6 +29,15 @@ input {
     border: 1px solid #ccc;
 }
 
+select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+}
+
 button {
     margin-top: 20px;
     width: 100%;
