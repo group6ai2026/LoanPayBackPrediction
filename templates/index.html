@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Repayment Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>Loan Repayment Prediction</h2>
+
+    <form id="predict-form" method="POST">
+        <div class="grid">
+            <input type="number" name="age" placeholder="Age" required>
+
+            <input type="text" name="gender" placeholder="Gender" required>
+            <input type="text" name="marital_status" placeholder="Marital Status" required>
+            <input type="text" name="education_level" placeholder="Education Level" required>
+            <input type="text" name="employment_status" placeholder="Employment Status" required>
+            <input type="text" name="loan_purpose" placeholder="Loan Purpose" required>
+            <input type="text" name="grade_subgrade" placeholder="Grade Subgrade" required>
+
+            <input type="number" step="any" name="annual_income" placeholder="Annual Income" required>
+            <input type="number" step="any" name="monthly_income" placeholder="Monthly Income" required>
+            <input type="number" step="any" name="debt_to_income_ratio" placeholder="Debt to Income Ratio" required>
+            <input type="number" name="credit_score" placeholder="Credit Score" required>
+            <input type="number" step="any" name="loan_amount" placeholder="Loan Amount" required>
+            <input type="number" step="any" name="interest_rate" placeholder="Interest Rate" required>
+            <input type="number" name="loan_term" placeholder="Loan Term (months)" required>
+            <input type="number" step="any" name="installment" placeholder="Installment" required>
+            <input type="number" name="num_of_open_accounts" placeholder="Open Accounts" required>
+            <input type="number" step="any" name="total_credit_limit" placeholder="Total Credit Limit" required>
+            <input type="number" step="any" name="current_balance" placeholder="Current Balance" required>
+            <input type="number" name="delinquency_history" placeholder="Delinquency History" required>
+            <input type="number" name="public_records" placeholder="Public Records" required>
+            <input type="number" name="num_of_delinquencies" placeholder="Number of Delinquencies" required>
+        </div>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    <div id="client-result" style="margin-top:20px;"></div>
+
+    <div id="network-log" style="margin-top:20px; font-family:monospace; font-size:13px; color:#333;"></div>
+
+    {% if prediction %}
+        <div class="result">
+            <h3>Prediction Result</h3>
+            <p><strong>Status:</strong> {{ prediction }}</p>
+            <p><strong>Probability:</strong> {{ probability }}</p>
+        </div>
+    {% endif %}
+
+    {% if error %}
+        <div class="error">
+            <p>{{ error }}</p>
+        </div>
+    {% endif %}
+
+    <script>
+        // Intercept the form submit and send via fetch so we can inspect network programmatically
+        const form = document.getElementById('predict-form');
+        const logEl = document.getElementById('network-log');
+        const resultEl = document.getElementById('client-result');
+
+        function appendLog(msg) {
+            const p = document.createElement('div');
+            p.textContent = msg;
+            logEl.prepend(p);
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            resultEl.innerHTML = '';
+            appendLog('Form submit intercepted — preparing request');
+
+            const formData = new FormData(form);
+            const obj = {};
+            for (const [k, v] of formData.entries()) obj[k] = v;
+
+            appendLog('Sending POST to frontend / (AJAX)');
+
+            try {
+                const resp = await fetch(window.location.pathname, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+
+                appendLog(`Frontend responded ${resp.status} ${resp.statusText}`);
+
+                let data;
+                const contentType = resp.headers.get('content-type') || '';
+                if (contentType.includes('application/json')) {
+                    data = await resp.json();
+                    appendLog('Parsed JSON response');
+                } else {
+                    data = await resp.text();
+                    appendLog('Received non-JSON response');
+                }
+
+                if (resp.ok && data && data.prediction) {
+                    resultEl.innerHTML = `<div class="result"><h3>Prediction Result</h3><p><strong>Status:</strong> ${data.prediction}</p><p><strong>Probability:</strong> ${data.probability}</p></div>`;
+                } else {
+                    resultEl.innerHTML = `<div class="error"><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                }
+            } catch (err) {
+                appendLog('Fetch failed: ' + err);
+                resultEl.innerHTML = `<div class="error">Fetch failed: ${err}</div>`;
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

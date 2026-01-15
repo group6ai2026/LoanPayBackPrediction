@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Repayment Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>Loan Repayment Prediction</h2>
+
+    <form method="POST">
+        <div class="grid">
+            <input type="number" name="age" placeholder="Age" required>
+
+            <input type="text" name="gender" placeholder="Gender" required>
+            <input type="text" name="marital_status" placeholder="Marital Status" required>
+            <input type="text" name="education_level" placeholder="Education Level" required>
+            <input type="text" name="employment_status" placeholder="Employment Status" required>
+            <input type="text" name="loan_purpose" placeholder="Loan Purpose" required>
+            <input type="text" name="grade_subgrade" placeholder="Grade Subgrade" required>
+
+            <input type="number" step="any" name="annual_income" placeholder="Annual Income" required>
+            <input type="number" step="any" name="monthly_income" placeholder="Monthly Income" required>
+            <input type="number" step="any" name="debt_to_income_ratio" placeholder="Debt to Income Ratio" required>
+            <input type="number" name="credit_score" placeholder="Credit Score" required>
+            <input type="number" step="any" name="loan_amount" placeholder="Loan Amount" required>
+            <input type="number" step="any" name="interest_rate" placeholder="Interest Rate" required>
+            <input type="number" name="loan_term" placeholder="Loan Term (months)" required>
+            <input type="number" step="any" name="installment" placeholder="Installment" required>
+            <input type="number" name="num_of_open_accounts" placeholder="Open Accounts" required>
+            <input type="number" step="any" name="total_credit_limit" placeholder="Total Credit Limit" required>
+            <input type="number" step="any" name="current_balance" placeholder="Current Balance" required>
+            <input type="number" name="delinquency_history" placeholder="Delinquency History" required>
+            <input type="number" name="public_records" placeholder="Public Records" required>
+            <input type="number" name="num_of_delinquencies" placeholder="Number of Delinquencies" required>
+        </div>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction %}
+        <div class="result">
+            <h3>Prediction Result</h3>
+            <p><strong>Status:</strong> {{ prediction }}</p>
+            <p><strong>Probability:</strong> {{ probability }}</p>
+        </div>
+    {% endif %}
+
+    {% if error %}
+        <div class="error">
+            <p>{{ error }}</p>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>
