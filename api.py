@@ -156,8 +156,8 @@ def predict():
             prediction = model.predict(df_prepared)[0]
             probability = model.predict_proba(df_prepared)[0][1]
 
-        # Apply 70% threshold
-        threshold = 0.70
+        # Apply 95% threshold
+        threshold = 0.95
         final_prediction = "Loan Paid Back" if probability >= threshold else "Loan Not Paid Back"
 
         return jsonify({
